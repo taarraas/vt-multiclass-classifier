@@ -20,7 +20,7 @@ bool SVMClassifier::classify(const Attributes& attrs) const
     return res > 0;
 };
 
-void LinearSVMHardMarginPolicy::solve(std::vector<double>& lambda)
+void LinearSVMSoftMarginPolicy::solve(std::vector<double>& lambda)
 {
     getInitialSolution(lambda);
     assert(checkConstraints(lambda));
@@ -128,7 +128,7 @@ void LinearSVMHardMarginPolicy::solve(std::vector<double>& lambda)
     }
 }
 
-bool LinearSVMHardMarginPolicy::checkConstraints(const std::vector<double>& lambda)
+bool LinearSVMSoftMarginPolicy::checkConstraints(const std::vector<double>& lambda)
 {
     double sum = 0;
     for (size_t i=0; i < lambda.size(); i++) {
@@ -143,13 +143,16 @@ bool LinearSVMHardMarginPolicy::checkConstraints(const std::vector<double>& lamb
     return std::abs(sum) < EPS;
 }
 
-void LinearSVMHardMarginPolicy::getInitialSolution(std::vector<double>& lambda)
+void LinearSVMSoftMarginPolicy::getInitialSolution(std::vector<double>& lambda)
 {
     lambda.resize(x_.size());
     int cntPos = 0;
     for (size_t i = 0; i < x_.size(); i++)
         if (y_[i])
             cntPos++;
+    
+    assert(cntPos != 0);
+    assert(cntPos != x_.size());
 
     double c = 100; //sum of lambda near both positive and negative y will be c
     double lPos = c / cntPos;
@@ -161,7 +164,7 @@ void LinearSVMHardMarginPolicy::getInitialSolution(std::vector<double>& lambda)
             lambda[i] = lNeg;
 }
 
-double LinearSVMHardMarginPolicy::evaluateL(const std::vector<double>& lambda)
+double LinearSVMSoftMarginPolicy::evaluateL(const std::vector<double>& lambda)
 {
     double l1 = 0;
     for (size_t i = 0; i < x_.size(); i++)

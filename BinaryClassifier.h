@@ -37,13 +37,13 @@ public:
     bool classify(const Attributes& attrs) const;
 };
 
-class LinearSVMHardMarginPolicy {
+class LinearSVMSoftMarginPolicy {
     const std::vector<Attributes>& x_;
     const std::vector<bool>& y_;
     double c_;
 public:
-    LinearSVMHardMarginPolicy(const std::vector<Attributes>& x,
-                const std::vector<bool> y)
+    LinearSVMSoftMarginPolicy(const std::vector<Attributes>& x,
+                const std::vector<bool>& y)
             : x_(x)
             , y_(y)
             , c_(100)
@@ -107,7 +107,7 @@ void SVMClassifierTrain<TrainPolicy>::train()
             wi += lambda[j] * x_[j].a[i] * (y_[j] ? 1 : -1);
 
         data_.w[i] = wi;
-        std::cout << wi;
+        std::cout << wi << " ";
     }
     std::cout << std::endl;
 

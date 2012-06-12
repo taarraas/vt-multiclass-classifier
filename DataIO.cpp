@@ -10,17 +10,29 @@
 
 void DataIO::load(std::string file,
             std::vector<Attributes>& attrs,
-            std::vector<int>& labels)
+            std::vector<int>& labels,
+            bool hasLabel)
 {
     std::ifstream ifs(file.c_str());
     while (!ifs.eof())
     {
         Attributes a;
-        for (int i = 0; i < Attributes::ATTRIBUTE_COUNT; i++)
+        
+        if (!(ifs >> a.a[0]))
+            break;
+                
+        for (int i = 1; i < Attributes::ATTRIBUTE_COUNT; i++)
         {
-            ifs >> a.a[i];            
             ifs.ignore(1, ',');
+            ifs >> a.a[i];            
+        }                
+        
+        if (!hasLabel) {
+            attrs.push_back(a);
+            continue;
         }
+            
+        ifs.ignore(1, ',');        
 
         std::string labelStr;
         ifs >> labelStr;
@@ -39,7 +51,16 @@ void DataIO::load(std::string file,
 void DataIO::save(std::string file,
             const std::vector<Attributes>& attrs,
             const std::vector<int>& labels)
-{
-    assert(false);
+{   
+    std::ofstream ofs(file.c_str());
+    ofs.precision(1);
+    ofs.setf(std::ios::fixed, std::ios::floatfield);
+    for (size_t i=0; i < attrs.size(); i++)
+    {
+        for (size_t j=0; j < Attributes::ATTRIBUTE_COUNT; j++)
+            ofs << attrs[i].a[j] << ",";
+        
+        ofs << "Label" << labels[i] << std::endl;
+    }
 }
 

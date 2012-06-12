@@ -15,7 +15,8 @@ class DataIO {
 public:
     static void load(std::string file,
             std::vector<Attributes>& attrs,
-            std::vector<int>& labels);
+            std::vector<int>& labels,
+            bool hasLabel = true);
     
     static void save(std::string file,
             const std::vector<Attributes>& attrs,

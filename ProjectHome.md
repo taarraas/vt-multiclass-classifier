@@ -1,0 +1,1 @@
+Linear kernel. Training is based on gradient method, so it's slow.
